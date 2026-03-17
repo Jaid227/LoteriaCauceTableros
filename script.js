@@ -1,12 +1,10 @@
-// script.js - Mismo código anterior, solo me aseguro de que el overlay funcione bien
+// script.js - Con semilla centrada en imagen
 
-// ---- CONFIGURACIÓN ----
 const TOTAL_IMAGENES_DISPONIBLES = 50;
 const FILAS = 3;
 const COLUMNAS = 4;
 const CANTIDAD_CARTAS = FILAS * COLUMNAS;
 
-// Lista completa de imágenes (con nombres reales)
 const listaCompleta = Array.from({ length: TOTAL_IMAGENES_DISPONIBLES }, (_, i) => {
     const num = i + 1;
     return {
@@ -34,7 +32,6 @@ listaCompleta.forEach((item, idx) => {
     else item.nombre = `Extra ${idx+1}`;
 });
 
-// ---- ESTADO ----
 let tableroActual = [];
 let seleccionadas = new Array(CANTIDAD_CARTAS).fill(false);
 let juegoGanado = false;
@@ -43,13 +40,10 @@ let intervaloProgreso = null;
 let tiempoPresionado = 0;
 const TIEMPO_REINICIO_SEG = 2;
 
-// ---- ELEMENTOS DOM ----
 const tableroDiv = document.getElementById('tablero');
 const mensajeVictoria = document.getElementById('mensajeVictoria');
 const btnReiniciar = document.getElementById('btnReiniciar');
 const barraProgreso = document.getElementById('barraProgreso');
-
-// ---- FUNCIONES ----
 
 function generarTableroAleatorio() {
     const copia = [...listaCompleta];
@@ -70,13 +64,14 @@ function renderizarTablero() {
         tarjeta.className = `tarjeta ${seleccionadas[index] ? 'seleccionada' : ''}`;
         tarjeta.dataset.index = index;
 
+        // Estructura: imagen + semilla centrada + nombre abajo
         tarjeta.innerHTML = `
             <div class="contenedor-imagen">
                 <img src="${carta.archivo}" alt="${carta.nombre}" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Error'">
+                <div class="semilla-centrada">🌰</div>
             </div>
             <div class="pie-tarjeta">
                 <span class="nombre" title="${carta.nombre}">${carta.nombre}</span>
-                <span class="semilla">${seleccionadas[index] ? '🌰' : ''}</span>
             </div>
         `;
 
@@ -88,7 +83,6 @@ function renderizarTablero() {
         tableroDiv.appendChild(tarjeta);
     });
 
-    // Verificar victoria
     const todasSeleccionadas = seleccionadas.every(val => val === true);
     if (todasSeleccionadas && !juegoGanado && seleccionadas.length > 0) {
         juegoGanado = true;
@@ -115,7 +109,7 @@ function reiniciarJuego() {
     renderizarTablero();
 }
 
-// ---- PROGRESO BOTÓN ----
+// Progreso del botón
 function iniciarProgreso() {
     if (intervaloProgreso) return;
     tiempoPresionado = 0;
@@ -144,7 +138,6 @@ function detenerProgreso() {
     barraProgreso.style.strokeDashoffset = '113.1';
 }
 
-// Eventos
 btnReiniciar.addEventListener('mousedown', iniciarProgreso);
 btnReiniciar.addEventListener('mouseup', detenerProgreso);
 btnReiniciar.addEventListener('mouseleave', detenerProgreso);
@@ -159,7 +152,6 @@ btnReiniciar.addEventListener('touchend', (e) => {
 });
 btnReiniciar.addEventListener('touchcancel', detenerProgreso);
 
-// Inicializar
 function init() {
     tableroActual = generarTableroAleatorio();
     seleccionadas = new Array(CANTIDAD_CARTAS).fill(false);
