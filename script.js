@@ -1,23 +1,21 @@
-// script.js
+// script.js - Mismo código anterior, solo me aseguro de que el overlay funcione bien
 
 // ---- CONFIGURACIÓN ----
-const TOTAL_IMAGENES_DISPONIBLES = 50;   // Debes tener imágenes 1.jpg ... 50.jpg (o .png)
+const TOTAL_IMAGENES_DISPONIBLES = 50;
 const FILAS = 3;
 const COLUMNAS = 4;
-const CANTIDAD_CARTAS = FILAS * COLUMNAS; // 12
+const CANTIDAD_CARTAS = FILAS * COLUMNAS;
 
-// Nombres descriptivos para cada carta (puedes personalizarlos después)
-// Se genera un array de objetos: { id, nombre, archivo }
+// Lista completa de imágenes (con nombres reales)
 const listaCompleta = Array.from({ length: TOTAL_IMAGENES_DISPONIBLES }, (_, i) => {
     const num = i + 1;
     return {
         id: num,
-        nombre: `Carta ${num}`,  // Por defecto, luego podrías mapear nombres reales
-        archivo: `imagenes/${num}.jpg` // asume .jpg, cambia si usas .png
+        nombre: `Carta ${num}`,
+        archivo: `imagenes/${num}.jpg`
     };
 });
 
-// Nombres reales de la loteria (opcional, asigna a los primeros 50)
 const nombresReales = [
     "El gallo", "El diablo", "La dama", "El catrín", "El paraguas",
     "La sirena", "La escalera", "La botella", "El barril", "El árbol",
@@ -30,20 +28,20 @@ const nombresReales = [
     "La rosa", "La calavera", "La campana", "El cantarito", "El venado",
     "El sol", "La corona", "La chalupa", "El pino", "El pescado"
 ];
-// Asignar nombres reales a los primeros 50 (si no alcanza, se repiten)
+
 listaCompleta.forEach((item, idx) => {
     if (idx < nombresReales.length) item.nombre = nombresReales[idx];
     else item.nombre = `Extra ${idx+1}`;
 });
 
-// ---- ESTADO DEL JUEGO ----
-let tableroActual = [];           // Array con las 12 cartas del tablero (objetos)
+// ---- ESTADO ----
+let tableroActual = [];
 let seleccionadas = new Array(CANTIDAD_CARTAS).fill(false);
 let juegoGanado = false;
 
 let intervaloProgreso = null;
 let tiempoPresionado = 0;
-const TIEMPO_REINICIO_SEG = 2;    // segundos para reiniciar
+const TIEMPO_REINICIO_SEG = 2;
 
 // ---- ELEMENTOS DOM ----
 const tableroDiv = document.getElementById('tablero');
@@ -53,21 +51,18 @@ const barraProgreso = document.getElementById('barraProgreso');
 
 // ---- FUNCIONES ----
 
-// Generar tablero con cartas aleatorias sin repetir
 function generarTableroAleatorio() {
-    // Copia de la lista completa para ir sacando
     const copia = [...listaCompleta];
     const seleccion = [];
     for (let i = 0; i < CANTIDAD_CARTAS; i++) {
-        if (copia.length === 0) break; // no debería pasar si hay 50
+        if (copia.length === 0) break;
         const indice = Math.floor(Math.random() * copia.length);
         seleccion.push(copia[indice]);
-        copia.splice(indice, 1); // eliminar para no repetir
+        copia.splice(indice, 1);
     }
     return seleccion;
 }
 
-// Dibujar el tablero en el DOM
 function renderizarTablero() {
     tableroDiv.innerHTML = '';
     tableroActual.forEach((carta, index) => {
@@ -75,7 +70,6 @@ function renderizarTablero() {
         tarjeta.className = `tarjeta ${seleccionadas[index] ? 'seleccionada' : ''}`;
         tarjeta.dataset.index = index;
 
-        // Estructura interna
         tarjeta.innerHTML = `
             <div class="contenedor-imagen">
                 <img src="${carta.archivo}" alt="${carta.nombre}" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Error'">
@@ -86,7 +80,6 @@ function renderizarTablero() {
             </div>
         `;
 
-        // Evento click (touch y mouse)
         tarjeta.addEventListener('click', (e) => {
             e.stopPropagation();
             manejarClickCarta(index);
@@ -95,7 +88,7 @@ function renderizarTablero() {
         tableroDiv.appendChild(tarjeta);
     });
 
-    // Verificar si todas están seleccionadas
+    // Verificar victoria
     const todasSeleccionadas = seleccionadas.every(val => val === true);
     if (todasSeleccionadas && !juegoGanado && seleccionadas.length > 0) {
         juegoGanado = true;
@@ -106,54 +99,41 @@ function renderizarTablero() {
     }
 }
 
-// Manejar clic en carta (seleccionar/deseleccionar)
 function manejarClickCarta(index) {
-    if (juegoGanado) return; // no se puede cambiar si ya ganó (opcional, puedes desactivar)
+    if (juegoGanado) return;
     seleccionadas[index] = !seleccionadas[index];
     renderizarTablero();
 }
 
-// Reiniciar el juego (nuevo tablero, limpiar selección)
 function reiniciarJuego() {
-    // Detener cualquier progreso en curso
     detenerProgreso();
-
     tableroActual = generarTableroAleatorio();
     seleccionadas = new Array(CANTIDAD_CARTAS).fill(false);
     juegoGanado = false;
     mensajeVictoria.style.display = 'none';
-
-    // Reiniciar barra de progreso visual
-    barraProgreso.style.strokeDashoffset = '113.1'; // circunferencia aprox 2*pi*18
-
+    barraProgreso.style.strokeDashoffset = '113.1';
     renderizarTablero();
 }
 
-// ---- MANEJO DEL BOTÓN REINICIAR CON PROGRESO CIRCULAR ----
+// ---- PROGRESO BOTÓN ----
 function iniciarProgreso() {
-    if (intervaloProgreso) return; // ya está corriendo
+    if (intervaloProgreso) return;
     tiempoPresionado = 0;
-    const circunferencia = 2 * Math.PI * 18; // ~113.097
+    const circunferencia = 2 * Math.PI * 18;
     barraProgreso.style.strokeDasharray = circunferencia;
     barraProgreso.style.strokeDashoffset = circunferencia;
 
-    const intervalo = 100; // ms
-    const incrementoPorIntervalo = (TIEMPO_REINICIO_SEG * 1000) / intervalo; // 20 pasos si 100ms -> 2s/0.1 = 20
-    const offsetPorIntervalo = circunferencia / incrementoPorIntervalo;
-
     intervaloProgreso = setInterval(() => {
-        tiempoPresionado += intervalo;
+        tiempoPresionado += 100;
         const progress = Math.min(tiempoPresionado / (TIEMPO_REINICIO_SEG * 1000), 1);
-        const offset = circunferencia * (1 - progress);
-        barraProgreso.style.strokeDashoffset = offset;
+        barraProgreso.style.strokeDashoffset = circunferencia * (1 - progress);
 
         if (progress >= 1) {
-            // ¡Completado! Reiniciar
             clearInterval(intervaloProgreso);
             intervaloProgreso = null;
             reiniciarJuego();
         }
-    }, intervalo);
+    }, 100);
 }
 
 function detenerProgreso() {
@@ -161,17 +141,16 @@ function detenerProgreso() {
         clearInterval(intervaloProgreso);
         intervaloProgreso = null;
     }
-    // Resetear barra a vacía
     barraProgreso.style.strokeDashoffset = '113.1';
 }
 
-// Eventos para ratón y táctil
+// Eventos
 btnReiniciar.addEventListener('mousedown', iniciarProgreso);
 btnReiniciar.addEventListener('mouseup', detenerProgreso);
 btnReiniciar.addEventListener('mouseleave', detenerProgreso);
 
 btnReiniciar.addEventListener('touchstart', (e) => {
-    e.preventDefault(); // evitar scroll o zoom
+    e.preventDefault();
     iniciarProgreso();
 });
 btnReiniciar.addEventListener('touchend', (e) => {
@@ -180,7 +159,7 @@ btnReiniciar.addEventListener('touchend', (e) => {
 });
 btnReiniciar.addEventListener('touchcancel', detenerProgreso);
 
-// Inicializar juego
+// Inicializar
 function init() {
     tableroActual = generarTableroAleatorio();
     seleccionadas = new Array(CANTIDAD_CARTAS).fill(false);
