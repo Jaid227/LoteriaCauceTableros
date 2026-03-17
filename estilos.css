@@ -1,4 +1,4 @@
-/* style.css - Versión Pantalla Completa */
+/* style.css - Semilla centrada en la imagen */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -9,7 +9,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(145deg, #1e3c2c 0%, #2a5a3a 100%);
     min-height: 100vh;
-    min-height: 100dvh; /* Para móviles modernos */
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,11 +42,10 @@ h1 {
     flex-shrink: 0;
 }
 
-/* Contenedor del tablero (posición relativa para overlay) */
 .contenedor-tablero {
     position: relative;
     flex: 1;
-    min-height: 0; /* Importante para flexbox */
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -54,7 +53,6 @@ h1 {
     margin-bottom: 16px;
 }
 
-/* Tablero 4x3 que ocupa todo el espacio disponible */
 .tablero {
     position: absolute;
     top: 0;
@@ -67,7 +65,7 @@ h1 {
     padding: 8px;
 }
 
-/* Tarjeta de imagen */
+/* Tarjeta */
 .tarjeta {
     aspect-ratio: 3 / 4;
     background: #fef7e6;
@@ -82,6 +80,7 @@ h1 {
     user-select: none;
     height: 100%;
     width: 100%;
+    position: relative; /* Para posicionar la semilla dentro */
 }
 
 .tarjeta:active {
@@ -97,6 +96,7 @@ h1 {
     padding: 6px 6px 2px;
     background: #fff;
     min-height: 0;
+    position: relative; /* Para el overlay de semilla */
 }
 
 .contenedor-imagen img {
@@ -107,7 +107,41 @@ h1 {
     border-radius: 8px;
 }
 
-/* Pie de la carta */
+/* SEMILLA CENTRADA EN LA IMAGEN */
+.semilla-centrada {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: #4caf50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    color: white;
+    box-shadow: 0 4px 0 #1e5622, 0 0 20px rgba(255,255,0,0.8);
+    border: 3px solid #ffd966;
+    z-index: 20;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none; /* No interfiere con clicks */
+}
+
+.tarjeta.seleccionada .semilla-centrada {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: latido 1s infinite alternate;
+}
+
+@keyframes latido {
+    from { transform: translate(-50%, -50%) scale(1); }
+    to { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* Pie de carta (solo nombre) */
 .pie-tarjeta {
     background: #f5e1b0;
     padding: 4px 4px;
@@ -116,49 +150,24 @@ h1 {
     font-size: clamp(0.6rem, 2.5vw, 0.9rem);
     color: #2d1f0b;
     border-top: 2px solid #c9a455;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2px;
     border-radius: 0 0 16px 16px;
-}
-
-.nombre {
-    flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-transform: capitalize;
-}
-
-.semilla {
-    font-size: 1.2rem;
-    line-height: 1;
-    width: 24px;
-    height: 24px;
-    background: #4caf50;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 0 #1e5622;
-    border: 1px solid #f9e7b3;
     flex-shrink: 0;
 }
 
-/* Estado seleccionado */
-.tarjeta.seleccionada .semilla {
-    background: #ff9800;
-    box-shadow: 0 2px 0 #b45f06;
-    transform: scale(1.1);
+.nombre {
+    display: block;
+    text-transform: capitalize;
 }
 
+/* Estado seleccionado (borde) */
 .tarjeta.seleccionada {
     box-shadow: 0 0 0 4px #ffd966, 0 8px 0 #8b5a2b;
 }
 
-/* Mensaje de victoria SUPERPUESTO */
+/* Mensaje de victoria */
 .mensaje-victoria {
     position: absolute;
     top: 50%;
@@ -179,7 +188,7 @@ h1 {
     padding: 20px 40px;
     border-radius: 60px;
     border: 4px solid #ffd966;
-    pointer-events: none; /* Para que no bloquee clicks en las cartas */
+    pointer-events: none;
 }
 
 @keyframes destello {
@@ -222,7 +231,6 @@ h1 {
     box-shadow: 0 4px 0 #7b4f2b;
 }
 
-/* SVG de progreso */
 .btn-reiniciar .progreso-circular {
     position: absolute;
     top: -6px;
@@ -256,18 +264,18 @@ h1 {
         gap: 6px;
     }
     
-    .semilla {
-        width: 20px;
-        height: 20px;
-        font-size: 1rem;
+    .semilla-centrada {
+        width: 45px;
+        height: 45px;
+        font-size: 1.8rem;
     }
     
     .mensaje-victoria {
         padding: 12px 24px;
         letter-spacing: 4px;
         white-space: normal;
-        text-align: center;
         width: 90%;
+        font-size: clamp(2rem, 10vw, 4rem);
     }
 }
 
@@ -280,5 +288,11 @@ h1 {
         font-size: 1.2rem;
         padding: 10px 20px;
         min-width: 170px;
+    }
+    
+    .semilla-centrada {
+        width: 35px;
+        height: 35px;
+        font-size: 1.4rem;
     }
 }
