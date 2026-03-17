@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Lotería · Generador de tablero</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <div class="contenedor-juego">
+        <h1>🎲 Lotería · Elige tus cartas</h1>
+
+        <!-- Tablero 4x3 -->
+        <div class="tablero" id="tablero"></div>
+
+        <!-- Mensaje de victoria -->
+        <div class="mensaje-victoria" id="mensajeVictoria">🎉 ¡LOTERÍA! 🎉</div>
+
+        <!-- Botón de reinicio con círculo de progreso -->
+        <div class="contenedor-reinicio">
+            <button class="btn-reiniciar" id="btnReiniciar">
+                <span class="icono">↻</span>
+                <span class="texto">Reiniciar</span>
+                <svg class="progreso-circular" viewBox="0 0 40 40">
+                    <circle class="fondo" cx="20" cy="20" r="18" fill="none" stroke="#eee" stroke-width="3"/>
+                    <circle class="barra" id="barraProgreso" cx="20" cy="20" r="18" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="113.1" stroke-dashoffset="113.1" transform="rotate(-90 20 20)"/>
+                </svg>
+            </button>
+            <p class="info-reinicio">(Mantén pulsado unos segundos)</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+/* style.css */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(145deg, #1e3c2c 0%, #2a5a3a 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    margin: 0;
+}
+
+.contenedor-juego {
+    max-width: 800px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    border-radius: 48px 48px 32px 32px;
+    padding: 24px 16px 32px;
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #f5e7c8;
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.6rem;
+    color: #f9e7b3;
+    text-shadow: 3px 3px 0 #8b5a2b;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    word-break: break-word;
+}
+
+/* Tablero 4x3 responsive */
+.tablero {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 0 8px;
+}
+
+/* Tarjeta de imagen */
+.tarjeta {
+    aspect-ratio: 3 / 4; /* Proporción similar a carta de lotería */
+    background: #fef7e6;
+    border-radius: 16px;
+    box-shadow: 0 10px 0 #8b5a2b, 0 4px 12px black;
+    border: 2px solid #d4af37;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.2s;
+    user-select: none;
+}
+
+.tarjeta:active {
+    transform: scale(0.97);
+}
+
+/* Contenedor de imagen */
+.contenedor-imagen {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 8px 4px;
+    background: #fff;
+}
+
+.contenedor-imagen img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 8px;
+    transition: opacity 0.2s;
+}
+
+/* Pie de la carta: nombre + semilla */
+.pie-tarjeta {
+    background: #f5e1b0;
+    padding: 6px 4px;
+    text-align: center;
+    font-weight: bold;
+    font-size: clamp(0.7rem, 3vw, 0.9rem);
+    color: #2d1f0b;
+    border-top: 2px solid #c9a455;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    border-radius: 0 0 16px 16px;
+}
+
+.nombre {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: capitalize;
+}
+
+.semilla {
+    font-size: 1.4rem;
+    line-height: 1;
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background: #4caf50;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 0 #1e5622;
+    border: 1px solid #f9e7b3;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    margin-right: 2px;
+}
+
+/* Estado seleccionado */
+.tarjeta.seleccionada .semilla {
+    background: #ff9800;
+    box-shadow: 0 3px 0 #b45f06;
+    transform: scale(1.1);
+}
+
+.tarjeta.seleccionada {
+    box-shadow: 0 0 0 10px #ffd966, 0 10px 0 #8b5a2b;
+}
+
+/* Mensaje de victoria */
+.mensaje-victoria {
+    font-size: 3.5rem;
+    font-weight: 900;
+    text-align: center;
+    color: #ffe484;
+    text-shadow: 5px 5px 0 #b3470c, 0 0 20px yellow;
+    letter-spacing: 8px;
+    word-break: break-word;
+    margin: 8px 0 16px;
+    display: none;
+    animation: destello 1s infinite alternate;
+}
+
+@keyframes destello {
+    from { text-shadow: 5px 5px 0 #b3470c, 0 0 20px #ff0; transform: scale(1); }
+    to { text-shadow: 8px 8px 0 #7a2e0a, 0 0 40px #ffa500; transform: scale(1.02); }
+}
+
+/* Botón de reinicio con círculo */
+.contenedor-reinicio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.btn-reiniciar {
+    background: #f5e7c8;
+    border: 4px solid #b57c48;
+    color: #3d2b13;
+    font-size: 1.4rem;
+    font-weight: bold;
+    padding: 16px 32px;
+    border-radius: 60px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 10px 0 #7b4f2b;
+    cursor: pointer;
+    transition: all 0.08s linear;
+    position: relative;
+    width: auto;
+    min-width: 200px;
+    touch-action: manipulation;
+    outline: none;
+}
+
+.btn-reiniciar:active {
+    transform: translateY(5px);
+    box-shadow: 0 5px 0 #7b4f2b;
+}
+
+/* SVG de progreso circular superpuesto */
+.btn-reiniciar .progreso-circular {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: calc(100% + 12px);
+    height: calc(100% + 12px);
+    pointer-events: none;
+    transform: rotate(0deg);
+}
+
+.btn-reiniciar .fondo {
+    stroke: #d0b080;
+    opacity: 0.6;
+}
+
+.btn-reiniciar .barra {
+    transition: stroke-dashoffset 0.1s linear;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 4px #91cf6f);
+}
+
+.icono {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.info-reinicio {
+    color: #eeddaa;
+    margin-top: 12px;
+    font-size: 0.9rem;
+    font-style: italic;
+    background: #2a4b33b3;
+    padding: 6px 18px;
+    border-radius: 40px;
+}
+
+/* Responsive para móviles pequeños */
+@media (max-width: 480px) {
+    .tablero {
+        gap: 6px;
+    }
+
+    .semilla {
+        width: 22px;
+        height: 22px;
+        font-size: 1rem;
+    }
+
+    .btn-reiniciar {
+        font-size: 1.2rem;
+        padding: 12px 24px;
+        min-width: 170px;
+    }
+
+    .mensaje-victoria {
+        font-size: 2.4rem;
+        letter-spacing: 4px;
+    }
+}
